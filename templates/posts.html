@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}
+Logs
+{% endblock %}
+{% block content %}
+<h1>Logs</h1>
+{% if posts %}
+{% for post in posts %}
+<h3><a href="./post/{{ post.id }}">{{ post.title|safe }}</a></h3>
+<p>by: {{ post.author|safe }}</p>
+{% endfor %}
+{% else %}
+<p>There are no logs to show.</p>
+<p><b><a href="{{ url_for('signup') }}">Be the first one! :)</a></b></p>
+{% endif %}
+{% endblock %}
