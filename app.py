@@ -32,11 +32,13 @@ class Posts(db.Model):
 
 class Users(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
 
 class RegisterForm(FlaskForm):
-    email = StringField("Email", validators=[InputRequired(), Length(max=50, message="Máx 50."), Email()])
+    username = StringField("Username", validators=[InputRequired(), Length(min=6, max=50)])
+    email = StringField("Email", validators=[InputRequired(), Length(min=6, max=50), Email()])
     password = PasswordField("Password", validators=[InputRequired(), Length(max=80, message="Máx 80.")])
     submit = SubmitField("Sign Up")
 
@@ -63,7 +65,7 @@ def post(id):
 def newPost():
 
     if request.method == "POST":
-        new_post = Posts(title=request.form["title"], content=request.form["content"], author=current_user.email)
+        new_post = Posts(title=request.form["title"], content=request.form["content"], author=current_user.username)
         db.session.add(new_post)
         db.session.commit()
         flash("The log was created successfully.")
@@ -76,12 +78,20 @@ def signup():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        hashed_pw = generate_password_hash(form.password.data)
-        new_user = Users(email=form.email.data, password=hashed_pw)
-        db.session.add(new_user)
-        db.session.commit()
-        flash("You've been registered successfully")
-        return redirect(url_for("signin"))
+        ccu = bool(Users.query.filter_by(username=form.username.data).first())
+        cee = bool(Users.query.filter_by(email=form.email.data).first())
+        
+        if ccu == True:
+            return "The username was taken by someone else. Try again with a new one."
+        elif cee == True:
+            return "A user with this email already exists. Try again with a new one."
+        else:
+            hashed_pw = generate_password_hash(form.password.data)
+            new_user = Users(username=form.username.data, email=form.email.data, password=hashed_pw)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("You've been registered successfully")
+            return redirect(url_for("signin"))
 
     return render_template("signup.html", form=form)
 

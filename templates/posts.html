@@ -6,8 +6,10 @@ Logs
 <h1>Logs</h1>
 {% if posts %}
 {% for post in posts %}
-<h3><a href="./post/{{ post.id }}">{{ post.title|safe }}</a></h3>
-<p>by: {{ post.author|safe }}</p>
+<div style="margin-bottom: 30px;">
+<h3 style="line-height: 30%;"><a href="./log/{{ post.id }}">{{ post.title|safe }}</a></h3>
+<p style="line-height: 30%;">by: {{ post.author|safe }}</p>
+</div>
 {% endfor %}
 {% else %}
 <p>There are no logs to show.</p>

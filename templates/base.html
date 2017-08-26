@@ -3,7 +3,8 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>{% block title %}{% endblock %}</title>
+		<title>{% block title %}{% endblock %} | CNS</title>
+                <link rel="shortcut icon" href="{{ url_for('static', filename='imgs/favicon.ico') }}">
 	</head>
 	<body>
 		{{ render_messages(messages) }}
